@@ -1,3 +1,0 @@
-This is file 1
-
-These are the contents of file 1
