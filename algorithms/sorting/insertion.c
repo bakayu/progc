@@ -30,20 +30,18 @@ int *generateDescArray(int size) {
     return arr;
 }
 
-// Sorts the given array using Bubble Sort.
-void applyBubbleSort(int arr[], int size) {
-    for (int i = 0; i < size; i++) {
-        bool swap = false;
-        for (int j = 0; j < size - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-                swap = true;
-            }
+// Sorts the given array using Insertion Sort.
+void applyInsertionSort(int arr[], int size) {
+    for (int i = 1; i < size; i++) {
+        int key = arr[i];
+        int j = i - 1;
+
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
         }
-        if (!swap)
-            return;
+
+        arr[j + 1] = key;
     }
 }
 
@@ -63,7 +61,7 @@ void analyze(int arr[], int size) {
     clock_t start = clock();
 
     // Apply sorting algorithm
-    applyBubbleSort(arr, size);
+    applyInsertionSort(arr, size);
 
     // Stop timer
     clock_t end = clock();
@@ -83,20 +81,21 @@ void analyze(int arr[], int size) {
 }
 
 int main() {
-    printf("Bubble sort for random data (execution time in ms):\n");
+    printf("Insertion sort for random data (execution time in ms):\n");
     for (int size = 8000; size <= 36000; size += 4000) {
         int *arr = generateRandomArray(size);
         analyze(arr, size);
     }
 
-    printf("Bubble sort for data in Ascending order (execution time in ms):\n");
+    printf(
+        "Insertion sort for data in Ascending order (execution time in ms):\n");
     for (int size = 8000; size <= 36000; size += 4000) {
         int *arr = generateAscArray(size);
         analyze(arr, size);
     }
 
-    printf(
-        "Bubble sort for data in Descending order (execution time in ms):\n");
+    printf("Insertion sort for data in Descending order (execution time in "
+           "ms):\n");
     for (int size = 8000; size <= 36000; size += 4000) {
         int *arr = generateDescArray(size);
         analyze(arr, size);

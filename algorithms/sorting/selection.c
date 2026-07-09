@@ -30,20 +30,25 @@ int *generateDescArray(int size) {
     return arr;
 }
 
-// Sorts the given array using Bubble Sort.
-void applyBubbleSort(int arr[], int size) {
+// swap two integers in an array
+void swap(int *ptr1, int *ptr2) {
+    int temp = *ptr1;
+    *ptr1 = *ptr2;
+    *ptr2 = temp;
+}
+
+// Sorts the given array using Selection Sort.
+void applySelectionSort(int arr[], int size) {
     for (int i = 0; i < size; i++) {
-        bool swap = false;
-        for (int j = 0; j < size - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-                swap = true;
-            }
+        int min_idx = i;
+
+        for (int j = i + 1; j < size; j++) {
+            if (arr[j] < arr[min_idx])
+                min_idx = j;
         }
-        if (!swap)
-            return;
+
+        if (i != min_idx)
+            swap(&arr[i], &arr[min_idx]);
     }
 }
 
@@ -63,7 +68,7 @@ void analyze(int arr[], int size) {
     clock_t start = clock();
 
     // Apply sorting algorithm
-    applyBubbleSort(arr, size);
+    applySelectionSort(arr, size);
 
     // Stop timer
     clock_t end = clock();
@@ -83,20 +88,21 @@ void analyze(int arr[], int size) {
 }
 
 int main() {
-    printf("Bubble sort for random data (execution time in ms):\n");
+    printf("Selection sort for random data (execution time in ms):\n");
     for (int size = 8000; size <= 36000; size += 4000) {
         int *arr = generateRandomArray(size);
         analyze(arr, size);
     }
 
-    printf("Bubble sort for data in Ascending order (execution time in ms):\n");
+    printf(
+        "Selection sort for data in Ascending order (execution time in ms):\n");
     for (int size = 8000; size <= 36000; size += 4000) {
         int *arr = generateAscArray(size);
         analyze(arr, size);
     }
 
-    printf(
-        "Bubble sort for data in Descending order (execution time in ms):\n");
+    printf("Selection sort for data in Descending order (execution time in "
+           "ms):\n");
     for (int size = 8000; size <= 36000; size += 4000) {
         int *arr = generateDescArray(size);
         analyze(arr, size);

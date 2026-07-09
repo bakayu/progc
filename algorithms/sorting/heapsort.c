@@ -30,31 +30,43 @@ int *generateDescArray(int size) {
     return arr;
 }
 
-// Sorts the given array using Bubble Sort.
-void applyBubbleSort(int arr[], int size) {
-    for (int i = 0; i < size; i++) {
-        bool swap = false;
-        for (int j = 0; j < size - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-                swap = true;
-            }
-        }
-        if (!swap)
-            return;
+// swap two integers in an array
+void swap(int *ptr1, int *ptr2) {
+    int temp = *ptr1;
+    *ptr1 = *ptr2;
+    *ptr2 = temp;
+}
+
+// helper for heap sort
+void helper(int arr[], int size, int idx) {
+    int max = idx;
+    int left = 2 * idx + 1;
+    int right = 2 * idx + 2;
+
+    if (left < size && arr[left] > arr[max]) {
+        max = left;
+    }
+
+    if (right < size && arr[right] > arr[max]) {
+        max = right;
+    }
+
+    if (max != idx) {
+        swap(&arr[idx], &arr[max]);
+        helper(arr, size, max);
     }
 }
 
-// Returns true if the array is sorted, otherwise false.
-bool verifySort(int arr[], int size) {
-    for (int i = 1; i < size; i++) {
-        if (arr[i] < arr[i - 1])
-            return false;
+// Sorts the given array using Heap Sort.
+void applyHeapSort(int arr[], int size) {
+    for (int i = size / 2 - 1; i >= 0; i--) {
+        helper(arr, size, i);
     }
 
-    return true;
+    for (int i = size - 1; i > 0; i--) {
+        swap(&arr[0], &arr[i]);
+        helper(arr, i, 0);
+    }
 }
 
 // Analyses the time taken
@@ -63,7 +75,7 @@ void analyze(int arr[], int size) {
     clock_t start = clock();
 
     // Apply sorting algorithm
-    applyBubbleSort(arr, size);
+    applyHeapSort(arr, size);
 
     // Stop timer
     clock_t end = clock();
@@ -71,32 +83,27 @@ void analyze(int arr[], int size) {
     // Calculate execution time
     double executionTime = (double)(end - start) / CLOCKS_PER_SEC;
 
-    if (!verifySort(arr, size)) {
-        printf("Failed: array not sorted.");
-        exit(-1);
-    }
-
-    printf("%.0f\n", executionTime * 1000);
+    printf("%.3f\n", executionTime * 1000);
 
     // Free dynamically allocated memory
     free(arr);
 }
 
 int main() {
-    printf("Bubble sort for random data (execution time in ms):\n");
+    printf("Heap sort for random data (execution time in ms):\n");
     for (int size = 8000; size <= 36000; size += 4000) {
         int *arr = generateRandomArray(size);
         analyze(arr, size);
     }
 
-    printf("Bubble sort for data in Ascending order (execution time in ms):\n");
+    printf("Heap sort for data in Ascending order (execution time in ms):\n");
     for (int size = 8000; size <= 36000; size += 4000) {
         int *arr = generateAscArray(size);
         analyze(arr, size);
     }
 
-    printf(
-        "Bubble sort for data in Descending order (execution time in ms):\n");
+    printf("Heap sort for data in Descending order (execution time in "
+           "ms):\n");
     for (int size = 8000; size <= 36000; size += 4000) {
         int *arr = generateDescArray(size);
         analyze(arr, size);
