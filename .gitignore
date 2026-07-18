@@ -5,6 +5,7 @@
 build
 blob
 *.log
+*.txt
 
 ### C ###
 # Prerequisites
