@@ -4,10 +4,11 @@
 #include <unistd.h>
 
 void encode(char *input, int size);
-void decode();
+void decode(char *input, int size);
 
 static const char BASE64_TABLE[65] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+int base64_reverse[256];
 
 /*
 USAGE: ./base64 [-d] <String>
@@ -47,7 +48,7 @@ int main(int argc, char *argv[]) {
     if (!decode_flag) {
         encode(argv[optind], strlen(argv[optind]));
     } else {
-        decode();
+        decode(argv[optind], strlen(argv[optind]));
     };
 
     return 0;
@@ -70,5 +71,29 @@ void encode(char *input, int size) {
     printf("\n");
 }
 
-// TODO: Implement decode
-void decode() { printf("decode not implemented yet\n"); };
+void decode(char *input, int size) {
+    for (int i = 0; i < 256; i++) {
+        base64_reverse[i] = -1;
+    }
+    for (int i = 0; i < 64; i++) {
+        base64_reverse[(unsigned char)BASE64_TABLE[i]] = i;
+    }
+
+    for (int i = 0; i < size; i += 4) {
+        int v1 = base64_reverse[(unsigned char)input[i]];
+        int v2 = base64_reverse[(unsigned char)input[i + 1]];
+        int v3 = base64_reverse[(unsigned char)input[i + 2]];
+        int v4 = base64_reverse[(unsigned char)input[i + 3]];
+
+        char b0 = (v1 << 2) | (v2 >> 4);
+        char b1 = ((v2 & 0x0F) << 4) | (v3 >> 2);
+        char b2 = ((v3 & 0x03) << 6) | v4;
+
+        printf("%c", b0);
+        if (input[i + 2] != '=')
+            printf("%c", b1);
+        if (input[i + 3] != '=')
+            printf("%c", b2);
+    }
+    printf("\n");
+};
