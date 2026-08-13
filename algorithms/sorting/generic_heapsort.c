@@ -23,6 +23,22 @@ int cmpInt(void *left, void *right) {
     return *(int *)left > *(int *)right ? 1 : -1;
 }
 
+int cmpFloat(void *left, void *right) {
+    if (*(float *)left == *(float *)right)
+        return 0;
+    return *(float *)left > *(float *)right ? 1 : -1;
+}
+
+int cmpChar(void *left, void *right) {
+    if (*(char *)left == *(char *)right)
+        return 0;
+    return *(char *)left > *(char *)right ? 1 : -1;
+}
+
+int cmpString(void *left, void *right) {
+    return strcmp(*(char **)left, *(char **)right);
+}
+
 // for max heap this acts as siftDown
 void heapify(void *arr, int size, int index, int elem_size, Comparator cmp) {
     int largest = index;
@@ -56,30 +72,65 @@ void heap_sort(void *arr, int size, int elem_size, Comparator cmp) {
     }
 }
 
+void print_int_arr(int *arr, int size) {
+    for (int i = 0; i < size; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+void print_float_arr(float *arr, int size) {
+    for (int i = 0; i < size; i++)
+        printf("%.2f ", arr[i]);
+    printf("\n");
+}
+
+void print_char_arr(char *arr, int size) {
+    for (int i = 0; i < size; i++)
+        printf("'%c' ", arr[i]);
+    printf("\n");
+}
+
+void print_string_arr(char **arr, int size) {
+    for (int i = 0; i < size; i++)
+        printf("'%s' ", arr[i]);
+    printf("\n");
+}
+
 int main(void) {
-    int arr[8] = {2, 8, 11, 12, 5, 34, 99, 0};
-    printf("Input array: ");
-    for (int i = 0; i < 8; i++) {
-        printf("%d ", arr[i]);
-    }
+    int arr_int[] = {2, 8, 11, 12, 5, 34, 99, 0};
+    printf("int array before: ");
+    print_int_arr(arr_int, sizeof(arr_int) / sizeof(arr_int[0]));
+    heap_sort(arr_int, sizeof(arr_int) / sizeof(arr_int[0]), sizeof(int),
+              cmpInt);
+    printf("int array after: ");
+    print_int_arr(arr_int, sizeof(arr_int) / sizeof(arr_int[0]));
     printf("\n");
 
-    // heapify demonstration:
-    for (int i = 4; i >= 0; i--) {
-        heapify(arr, 8, i, sizeof(int), cmpInt);
-    }
-    printf("Heapify: ");
-    for (int i = 0; i < 8; i++) {
-        printf("%d ", arr[i]);
-    }
+    float arr_float[] = {0.5, 24.5, 6.9, 6.7, 100.0, 0.0, 1.0, 78.78};
+    printf("float array before: ");
+    print_float_arr(arr_float, sizeof(arr_float) / sizeof(arr_float[0]));
+    heap_sort(arr_float, sizeof(arr_float) / sizeof(arr_float[0]),
+              sizeof(float), cmpFloat);
+    printf("float array after: ");
+    print_float_arr(arr_float, sizeof(arr_float) / sizeof(arr_float[0]));
     printf("\n");
 
-    // heapsort demonstration:
-    printf("heap sort: ");
-    heap_sort(arr, 8, sizeof(int), cmpInt);
-    for (int i = 0; i < 8; i++) {
-        printf("%d ", arr[i]);
-    }
+    char arr_char[] = {'h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd'};
+    printf("char array before: ");
+    print_char_arr(arr_char, sizeof(arr_char) / sizeof(arr_char[0]));
+    heap_sort(arr_char, sizeof(arr_char) / sizeof(arr_char[0]), sizeof(char),
+              cmpChar);
+    printf("char array after: ");
+    print_char_arr(arr_char, sizeof(arr_char) / sizeof(arr_char[0]));
     printf("\n");
+
+    char *arr_str[] = {"hello world", "this is a string in C", "abcd", "0-9/="};
+    printf("string array before: ");
+    print_string_arr(arr_str, sizeof(arr_str) / sizeof(arr_str[0]));
+    heap_sort(arr_str, sizeof(arr_str) / sizeof(arr_str[0]), sizeof(char *),
+              cmpString);
+    printf("string array after: ");
+    print_string_arr(arr_str, sizeof(arr_str) / sizeof(arr_str[0]));
+
     return 0;
 }
